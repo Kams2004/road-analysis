@@ -1,0 +1,31 @@
+# Virtual environment
+venv/
+
+# Model weights
+*.pt
+*.pth
+
+# Large video/image outputs
+*.mp4
+*.zip
+detected_*.jpg
+detected_*.jpeg
+output_*.mp4
+
+# Datasets (upload separately to server)
+train/
+valid/
+test/
+speed_bump/
+traffic_signs/
+traffic_signs_augmented/
+new_traffic_signs_raw/
+detections_crops/
+runs/
+detection signe project /
+
+# Cache
+*.cache
+__pycache__/
+*.pyc
+.DS_Store
