@@ -24,6 +24,9 @@ detections_crops/
 runs/
 detection signe project /
 
+# Environment variables
+.env
+
 # Cache
 *.cache
 __pycache__/
