@@ -1,42 +1,27 @@
 import time
-import os
-import requests
-from dotenv import load_dotenv
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
-load_dotenv()
+RECIPIENT    = "ulrich.kamsu@camtrack.net"
+SENDER_EMAIL = "simokylian1@gmail.com"
+SENDER_PASSWORD = "ipzqubfqydprothg"  # app password (no spaces)
+SMTP_HOST    = "smtp.gmail.com"
+SMTP_PORT    = 587
 
-RECIPIENT           = "ulrich.kamsu@camtrack.net"
-EMAIL_USER          = os.getenv("EMAIL_USER")
-GRAPH_CLIENT_ID     = os.getenv("GRAPH_CLIENT_ID")
-GRAPH_TENANT_ID     = os.getenv("GRAPH_TENANT_ID")
-GRAPH_CLIENT_SECRET = os.getenv("GRAPH_CLIENT_SECRET")
-
-def _get_access_token():
-    url = f"https://login.microsoftonline.com/{GRAPH_TENANT_ID}/oauth2/v2.0/token"
-    data = {
-        "grant_type": "client_credentials",
-        "client_id": GRAPH_CLIENT_ID,
-        "client_secret": GRAPH_CLIENT_SECRET,
-        "scope": "https://graph.microsoft.com/.default",
-    }
-    resp = requests.post(url, data=data)
-    resp.raise_for_status()
-    return resp.json()["access_token"]
 
 def send_email(subject, body):
     try:
-        token = _get_access_token()
-        url = f"https://graph.microsoft.com/v1.0/users/{EMAIL_USER}/sendMail"
-        payload = {
-            "message": {
-                "subject": subject,
-                "body": {"contentType": "Text", "content": body},
-                "toRecipients": [{"emailAddress": {"address": RECIPIENT}}],
-            }
-        }
-        resp = requests.post(url, json=payload,
-                             headers={"Authorization": f"Bearer {token}"})
-        resp.raise_for_status()
+        msg = MIMEMultipart()
+        msg["From"]    = SENDER_EMAIL
+        msg["To"]      = RECIPIENT
+        msg["Subject"] = subject
+        msg.attach(MIMEText(body, "plain"))
+
+        with smtplib.SMTP(SMTP_HOST, SMTP_PORT) as server:
+            server.starttls()
+            server.login(SENDER_EMAIL, SENDER_PASSWORD)
+            server.sendmail(SENDER_EMAIL, RECIPIENT, msg.as_string())
         print(f"[Email sent] {subject}")
     except Exception as e:
         print(f"[Email failed] {e}")
@@ -55,10 +40,10 @@ def format_time(seconds):
 
 class TrainingNotifier:
     def __init__(self, model_name, total_epochs):
-        self.model_name = model_name
+        self.model_name   = model_name
         self.total_epochs = total_epochs
-        self.start_time = None
-        self.half_sent = False
+        self.start_time   = None
+        self.half_sent    = False
 
     def on_train_start(self):
         self.start_time = time.time()
@@ -74,12 +59,10 @@ class TrainingNotifier:
     def on_epoch_end(self, current_epoch):
         if self.start_time is None:
             return
-
-        elapsed = time.time() - self.start_time
-        progress = current_epoch / self.total_epochs
+        elapsed   = time.time() - self.start_time
+        progress  = current_epoch / self.total_epochs
         remaining = (elapsed / progress) - elapsed if progress > 0 else 0
 
-        # Send at 50%
         if not self.half_sent and current_epoch >= self.total_epochs // 2:
             self.half_sent = True
             send_email(
