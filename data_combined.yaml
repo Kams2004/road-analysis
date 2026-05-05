@@ -1,0 +1,17 @@
+train:
+  - /home/deploy/road-analysis/train/images
+  - /home/deploy/road-analysis/traffic_signs_augmented/train/images
+  - /home/deploy/road-analysis/speed_bump/train/images
+
+val:
+  - /home/deploy/road-analysis/valid/images
+  - /home/deploy/road-analysis/traffic_signs/valid/images
+  - /home/deploy/road-analysis/speed_bump/valid/images
+
+test:
+  - /home/deploy/road-analysis/test/images
+  - /home/deploy/road-analysis/traffic_signs/test/images
+  - /home/deploy/road-analysis/speed_bump/test/images
+
+nc: 6
+names: ['pothole', 'speedlimit', 'crosswalk', 'trafficlight', 'stop', 'speed_bump']
