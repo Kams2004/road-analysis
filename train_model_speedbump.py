@@ -15,7 +15,7 @@ def train():
         epochs=total_epochs,
         imgsz=640,
         batch=16,
-        workers=8,
+        workers=6,
         cache='ram',
         device='cpu',
         optimizer='AdamW',
