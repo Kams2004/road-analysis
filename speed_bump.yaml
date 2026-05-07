@@ -1,6 +1,6 @@
-train: ../speed_bump/train/images
-val: ../speed_bump/valid/images
-test: ../speed_bump/test/images
+train: /home/deploy/road-analysis/speed_bump/train/images
+val: /home/deploy/road-analysis/speed_bump/valid/images
+test: /home/deploy/road-analysis/speed_bump/test/images
 
 nc: 1
 names: ['speed_bump']

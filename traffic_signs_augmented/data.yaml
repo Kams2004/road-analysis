@@ -1,0 +1,6 @@
+train: /home/deploy/road-analysis/traffic_signs_augmented/train/images
+val: /home/deploy/road-analysis/traffic_signs_augmented/valid/images
+test: /home/deploy/road-analysis/traffic_signs_augmented/test/images
+
+nc: 4
+names: ['speedlimit', 'crosswalk', 'trafficlight', 'stop']
